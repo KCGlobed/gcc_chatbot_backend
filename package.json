@@ -1,0 +1,45 @@
+{
+  "name": "kcg-bot-backend",
+  "version": "1.0.0",
+  "description": "Backend for KC GlobEd Chatbot",
+  "main": "dist/server.js",
+  "scripts": {
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.ts",
+    "chat": "ts-node src/scripts/cmd-chat.ts",
+    "ingest-web": "ts-node src/scripts/ingest-web.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@langchain/community": "^1.1.9",
+    "@langchain/core": "^1.1.17",
+    "@langchain/openai": "^0.0.33",
+    "body-parser": "^1.20.2",
+    "chromadb": "^3.2.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "langchain": "^0.1.37",
+    "open": "^11.0.0",
+    "pdf-parse": "^1.1.1",
+    "puppeteer": "^19.11.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "uuid": "^13.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.25",
+    "@types/node": "^20.12.12",
+    "@types/pdf-parse": "^1.1.5",
+    "@types/sqlite3": "^3.1.11",
+    "@types/uuid": "^10.0.0",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
