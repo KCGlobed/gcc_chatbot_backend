@@ -1,0 +1,18 @@
+Starting Strict Context Enforcement Test...
+
+Query: "What is the highest package at GCC School?"
+Response: I do not have that information in the provided records.
+Confidence: 0.5507321263078063
+--------------------------------------------------
+Query: "What is the capital of France?"
+Response: I do not have that information in the provided records.
+Confidence: 0.35875058507736046
+--------------------------------------------------
+Query: "Tell me about the Python course"
+Response: I do not have information about a Python course in the provided records.
+Confidence: 0.40712587534098826
+--------------------------------------------------
+Query: "kitne lakh tk ki loan mil sakta hai?"
+Response: Diye gaye records mein education loan ki maximum limit (kitne lakh tak) ka zikr nahi hai. Context ke mutabik GCC School Bajaj Finserv aur HDFC Bank ke saath loan assistance deta hai aur documentation, application, aur approval mein guidance karta hai.
+Confidence: 0.4091866550483117
+--------------------------------------------------

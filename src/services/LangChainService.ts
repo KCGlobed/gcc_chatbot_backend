@@ -102,4 +102,45 @@ export class LangChainService {
     async getEmbedding(text: string): Promise<number[]> {
         return await this.embeddingModel.embedQuery(text);
     }
+
+    async extractUserData(message: string): Promise<{ name?: string, phoneNumber?: string, intent?: 'provide_data' | 'refuse' | 'other' }> {
+        const extractionPrompt = `
+        Analyze the following user message effectively to extract Name and Phone Number.
+        
+        User Message: "${message}"
+
+        Rules:
+        1. Extract the **Name** if provided. It should be a proper name (e.g., "John Doe", "Rahul"). Ignore common words or refusal phrases.
+        2. Extract the **Phone Number** if provided. It must be at least 10 digits.
+        3. Determine the **Intent**:
+           - 'provide_data': if the user is providing name or phone number.
+           - 'refuse': if the user explicitly refuses to provide information (e.g., "I will not give my number").
+           - 'other': if the user says something else unrelated.
+
+        Respond ONLY in JSON format:
+        {
+            "name": "extracted name or null",
+            "phoneNumber": "extracted phone or null",
+            "intent": "provide_data | refuse | other"
+        }
+        `;
+
+        try {
+            const response = await this.chatModel.invoke([new SystemMessage(extractionPrompt)] as any);
+            let content = typeof response.content === 'string' ? response.content : "";
+
+            // Clean up code blocks if present
+            content = content.replace(/```json/g, '').replace(/```/g, '').trim();
+
+            const data = JSON.parse(content);
+            return {
+                name: data.name || undefined,
+                phoneNumber: data.phoneNumber || undefined,
+                intent: data.intent
+            };
+        } catch (error) {
+            console.error("Error extracting user data:", error);
+            return { intent: 'other' };
+        }
+    }
 }

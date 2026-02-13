@@ -1,0 +1,43 @@
+Starting Extraction Tests...
+
+Input: "My name is John Doe and my number is 9876543210"
+Result: {
+  "name": "John Doe",
+  "phoneNumber": "9876543210",
+  "intent": "provide_data"
+}
+--------------------------------------------------
+Input: "9876543210"
+Result: {
+  "phoneNumber": "9876543210",
+  "intent": "provide_data"
+}
+--------------------------------------------------
+Input: "John Doe"
+Result: {
+  "name": "John Doe",
+  "intent": "provide_data"
+}
+--------------------------------------------------
+Input: "i will not provide the number"
+Result: {
+  "intent": "refuse"
+}
+--------------------------------------------------
+Input: "Rahul, 9876543210"
+Result: {
+  "name": "Rahul",
+  "phoneNumber": "9876543210",
+  "intent": "provide_data"
+}
+--------------------------------------------------
+Input: "Hello there"
+Result: {
+  "intent": "other"
+}
+--------------------------------------------------
+Input: "I am not sharing my details"
+Result: {
+  "intent": "refuse"
+}
+--------------------------------------------------

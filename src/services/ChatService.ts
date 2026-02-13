@@ -55,40 +55,31 @@ export class ChatService {
                 session.userData = {};
             }
 
-            const phoneMatch = messageText.match(/\b\d{10,}\b/);
-            if (phoneMatch) {
-                console.log(`[DEBUG] Found phone: ${phoneMatch[0]}`);
-                session.userData.phoneNumber = phoneMatch[0];
-            } else {
-                console.log(`[DEBUG] No phone match found in: "${messageText}"`);
+            // use LLM to extract data
+            const extractedData = await this.langChainService.extractUserData(messageText);
+            console.log(`[DEBUG] LLM Extracted Data:`, extractedData);
+
+            if (extractedData.intent === 'refuse') {
+                const response = "I understand. However, I need your Name and Phone Number to assist you further with course details or admissions. Can you please provide them?";
+                session.messages.push({ role: 'assistant', content: response });
+                return { message: response };
             }
 
-            let textForName = messageText;
-            if (phoneMatch) {
-                textForName = messageText.replace(phoneMatch[0], '');
+            if (extractedData.name) {
+                session.userData.name = extractedData.name;
             }
-
-            const nameCandidate = textForName.replace(/[^a-zA-Z\s]/g, '').trim();
-            console.log(`[DEBUG] Name candidate: "${nameCandidate}"`);
-
-            if (nameCandidate.length > 2) {
-                if (!session.userData.name) {
-                    console.log(`[DEBUG] Setting name: ${nameCandidate}`);
-                    session.userData.name = nameCandidate;
-                }
+            if (extractedData.phoneNumber) {
+                session.userData.phoneNumber = extractedData.phoneNumber;
             }
 
             const hasName = !!(session.userData.name && session.userData.name.length > 2);
             const hasPhone = !!(session.userData.phoneNumber && session.userData.phoneNumber.match(/\d{10,}/));
 
             console.log(`[DEBUG] State: hasName=${hasName}, hasPhone=${hasPhone}`);
-            console.log(`[DEBUG] userData: ${JSON.stringify(session.userData)}`);
 
             if (hasName && hasPhone) {
                 const name = session.userData.name!;
                 const phoneNumber = session.userData.phoneNumber!;
-
-                console.log(`[DEBUG] Completing data collection for ${name}, ${phoneNumber}`);
 
                 await this.dbService.saveUser(name, phoneNumber);
 
@@ -103,32 +94,17 @@ export class ChatService {
                     options: uniqueOptions
                 };
             } else {
-                let errorMsg = "";
-                if (!hasName && !hasPhone) {
-                    const digits = messageText.replace(/\D/g, '');
-                    if (digits.length > 0 && digits.length < 10) {
-                        errorMsg = `I see a number, but it's too short (${digits.length} digits). Please provide your Name and a valid 10-digit Phone Number.`;
-                    } else {
-                        errorMsg = "Please provide your Name (at least 3 letters) and a Phone Number (at least 10 digits).";
-                    }
-                } else if (!hasName) {
-                    errorMsg = "Thanks for the phone number! Please provide your Name (at least 3 letters).";
-                } else {
-                    const digits = messageText.replace(/\D/g, '');
-                    console.log(`[DEBUG] Missing phone. Digits found: "${digits}" (length: ${digits.length})`);
+                let errorMsg = "Please provide your Name and a valid 10-digit Phone Number.";
 
-                    if (digits.length > 0) {
-                        if (digits.length < 10) {
-                            errorMsg = `Thanks ${session.userData.name}! That number is too short (${digits.length} digits). Please provide a valid 10-digit Phone Number.`;
-                        } else {
-                            errorMsg = `Thanks ${session.userData.name}! Please provide a valid Phone Number (at least 10 digits).`;
-                        }
-                    } else {
-                        errorMsg = `Thanks ${session.userData.name}! I didn't see a phone number. Please provide your 10-digit Phone Number.`;
-                    }
+                if (hasName && !hasPhone) {
+                    errorMsg = `Thanks ${session.userData.name}! Please provide your 10-digit Phone Number.`;
+                } else if (!hasName && hasPhone) {
+                    errorMsg = "Thanks for the number! Please provide your Name.";
+                } else if (!hasName && !hasPhone && extractedData.intent === 'other') {
+                    // if user said something unrelated, gently prompt again
+                    errorMsg = "I didn't catch your details. Please provide your Name and Phone Number (e.g., John Doe, 9876543210).";
                 }
 
-                console.log(`[DEBUG] Returning error: "${errorMsg}"`);
                 session.messages.push({ role: 'assistant', content: errorMsg });
                 return { message: errorMsg };
             }
