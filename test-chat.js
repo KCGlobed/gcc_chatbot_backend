@@ -45,15 +45,6 @@ async function runTest() {
     await sendMessage("What courses do you offer for science?");
 }
 
-// Simple mock for fetch if not available in node 18+ globally without flag, or just rely on native fetch in newer node
-// If node version is old, this might fail, but let's assume standard environment or I'll run with ts-node if needed.
-// actually node-fetch needs install, but I didn't install it.
-// I will use standard http or just assume node > 18 has fetch. 
-// Safer: I'll use a simple http wrapper or curl in the terminal. 
-// But wait, I can just use the provided 'curl' via run_command for each step if I want to be 100% sure without extra deps.
-// Re-writing to not rely on external 'node-fetch' if not installed.
-// I'll just write a script that uses native 'http' module or valid 'fetch' if Node 18+.
-// I'll assume Node 18+ for this project.
 
 if (!globalThis.fetch) {
     console.error("Fetch not available! Please use Node 18+");
