@@ -18,8 +18,8 @@ export async function ingestDocs() {
         console.log(`Loaded ${docs.length} pages.`);
 
         const splitter = new RecursiveCharacterTextSplitter({
-            chunkSize: 1000,
-            chunkOverlap: 200,
+            chunkSize: 700,
+            chunkOverlap: 150,
         });
 
         const splitDocs = await splitter.splitDocuments(docs);

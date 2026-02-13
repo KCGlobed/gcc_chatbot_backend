@@ -54,7 +54,7 @@ export class LangChainService {
         }
 
         const messages = [
-            new SystemMessage(`You are KC GlobEd Bot, a helpful assistant for KC Globed. You help with courses, admissions, and LMS support.
+            new SystemMessage(`You are GCC School Bot, a helpful assistant for GCC School. You help with courses, admissions.
 
             Use the following context to answer the user's question.
             
