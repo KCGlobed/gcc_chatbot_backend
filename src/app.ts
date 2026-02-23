@@ -8,7 +8,6 @@ dotenv.config();
 export class App {
     public app: Application;
     private chatController: ChatController;
-
     constructor() {
         this.app = express();
         this.config();
