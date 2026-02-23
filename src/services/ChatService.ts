@@ -83,15 +83,14 @@ export class ChatService {
 
                 await this.dbService.saveUser(name, phoneNumber);
 
-                const uniqueOptions = ["Explore Courses", "Apply for Admission", "Access LMS / Student Login", "Talk to a counsellor", "Ask a Question"];
-                const msg = `Thanks ${name}! Please select an option below:`;
+                // const uniqueOptions = ["Explore Courses", "Apply for Admission", "Access LMS / Student Login", "Talk to a counsellor", "Ask a Question"];
+                const msg = `Thanks ${name}! How can I help you today?`;
 
-                session.messages.push({ role: 'assistant', content: msg, options: uniqueOptions });
+                session.messages.push({ role: 'assistant', content: msg });
                 session.stage = 'IDENTIFICATION';
 
                 return {
-                    message: msg,
-                    options: uniqueOptions
+                    message: msg
                 };
             } else {
                 let errorMsg = "Please provide your Name and a valid 10-digit Phone Number.";
